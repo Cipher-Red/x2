@@ -1,0 +1,892 @@
+<!Doctype html>
+<html>
+<head>
+<title>X2</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 36px;
+  font-size: 20px;
+}
+
+.main-menu {
+  background: #73AF6F;
+  border-right: 1px solid #e5e5e5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 60px;
+  overflow: hidden;
+  transition: width 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+.main-menu:hover,
+.main-menu.expanded {
+  width: 250px;
+}
+
+.main-menu > ul {
+  margin: 7px 0;
+  list-style: none;
+  padding: 0;
+}
+
+.main-menu li {
+  width: 250px;
+}
+
+.main-menu li > a {
+  display: flex;
+  align-items: center;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  padding: 8px 0;
+}
+
+.main-menu li:hover > a,
+.main-menu li.active > a {
+  color: #fff;
+  background: #435663;
+}
+
+.main-menu .nav-icon {
+  flex: 0 0 60px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.main-menu .nav-text {
+  flex: 1;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+.main-menu > ul.logout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+/* Price Match Styles */
+.info-panel {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #73AF6F;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(15px);
+  margin-bottom: 1.5rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.info-row label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-stat {
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-stat span:last-child {
+  font-weight: 700;
+  color: #73AF6F;
+}
+
+input[type="number"],
+input[type="text"],
+textarea {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: 2px solid #73AF6F;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  outline: none;
+  width: 100%;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #435663;
+  box-shadow: 0 0 0 3px rgba(115, 175, 111, 0.2);
+}
+
+input[type="number"] {
+  text-align: center;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: inherit;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+button {
+  background: #73AF6F;
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+button:hover:not(:disabled) {
+  background: #435663;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(67, 86, 99, 0.4);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.parts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.parts-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.parts-container::-webkit-scrollbar-track {
+  background: rgba(115, 175, 111, 0.1);
+  border-radius: 4px;
+}
+
+.parts-container::-webkit-scrollbar-thumb {
+  background: #73AF6F;
+  border-radius: 4px;
+}
+
+.parts-container::-webkit-scrollbar-thumb:hover {
+  background: #435663;
+}
+
+.part-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #73AF6F;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.part-row:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #435663;
+}
+
+.part-row input[type="number"],
+.part-row input[type="text"] {
+  margin: 0;
+  height: 2.5rem;
+}
+
+.part-row input:nth-child(1) { width: 4rem; }
+.part-row input:nth-child(2) { flex: 1; min-width: 150px; }
+.part-row input:nth-child(3) { width: 8rem; }
+.part-row input:nth-child(4) { width: 5.5rem; }
+.part-row input:nth-child(5) { width: 5.5rem; background: rgba(115, 175, 111, 0.1); }
+
+.refund-checkbox {
+  appearance: none;
+  height: 1.75rem;
+  width: 1.75rem;
+  border: 2px solid #73AF6F;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.refund-checkbox:hover {
+  border-color: #435663;
+  box-shadow: 0 0 8px rgba(115, 175, 111, 0.5);
+}
+
+.refund-checkbox:checked {
+  background-color: #73AF6F;
+  box-shadow: 0 0 12px rgba(115, 175, 111, 0.7);
+}
+
+.refund-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 0.375rem;
+  border-left: 3px solid #ff6b6b;
+}
+
+.status-message {
+  font-size: 1rem;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</head>
+
+<body style="background-image: linear-gradient(90.2deg, #73AF6F -0.4%, #435663 106.1%); color:white; font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;">
+
+<div class="area"></div>
+<nav class="main-menu">
+  <div class="nav-logo" style="text-align:center; padding: 20px 0;">
+    <a href="Index.html" style="color:inherit">
+      <i class="fa fa-superscript" aria-hidden="true"></i>
+    </a>
+  </div>
+
+  <ul>
+    <li>
+      <a href="#">
+        <i class="fa fa-home" aria-hidden="true"></i>
+        <span class="nav-text">Home</span>
+      </a>
+    </li>
+    <li class="has-subnav">
+      <a href="#">
+        <i class="fa fa-cube" aria-hidden="true"></i>
+        <span class="nav-text">Tasks & Tools</span>
+      </a>
+    </li>
+    <li class="has-subnav">
+      <a href="#">
+        <i class="fa fa-database" aria-hidden="true"></i>
+        <span class="nav-text">DataBase</span>
+      </a>
+    </li>
+    <li class="has-subnav">
+      <a href="#">
+        <i class="fa fa-circle-o-notch" aria-hidden="true"></i>
+        <span class="nav-text">Setting</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<H2 style="border-bottom:solid 1px; padding-left:250px;">Tasks & Tools</h2>
+
+<div class="content-wrapper" style="margin-left: 250px; padding: 20px;">
+  <div class="left-section">
+    <div class="info-panel">
+      <div class="info-row">
+        <label>
+          Kit Number Lookup:
+          <input id="kitNumberInput" type="text" maxlength="50" placeholder="Enter kit number (e.g., 2236-H)" />
+        </label>
+        <button id="lookupBtn" style="margin-top: 0.5rem;">Lookup Kit Components</button>
+        <div id="lookupError" class="error-message" style="display: none;"></div>
+        <div id="lookupStatus" class="status-message" style="display: none;"></div>
+      </div>
+
+      <div class="info-row">
+        <label>
+          Kit Price:
+          <input id="kitPrice" type="number" min="0" max="999999" step="0.01" placeholder="0.00" />
+        </label>
+        <div id="kitPriceError" class="error-message" style="display: none;"></div>
+      </div>
+
+      <div class="info-stat">
+        <span>Refund Amount:</span>
+        <span>$<span id="refundTotal">0.00</span></span>
+      </div>
+
+      <div class="info-stat">
+        <span>Deduction Amount:</span>
+        <span>$<span id="deductionTotal">0.00</span></span>
+      </div>
+
+      <div id="message" class="status-message" style="display: none;"></div>
+
+      <div class="info-stat" style="margin-top: 1rem;">
+        <span>Price Matches Done:</span>
+        <span id="counter">0</span>
+      </div>
+      
+      <div class="info-stat">
+        <span id="result">Loading...</span>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <textarea id="bulkInput" placeholder="Paste part list here (Qty | Part Name | Part #)..." maxlength="10000"></textarea>
+        <div id="bulkInputError" class="error-message" style="display: none;"></div>
+
+        <div class="button-group">
+          <button id="clearBtn">Clear All</button>
+          <button id="addPartBtn">Add Part</button>
+          <button id="removePartBtn">Remove Part</button>
+        </div>
+        <div id="submitMessage" class="status-message" style="display: none; margin-top: 1rem;"></div>
+      </div>
+    </div>
+
+    <div class="parts-container" id="partsContainer"></div>
+  </div>
+</div>
+
+<script>
+// Supabase setup
+const supabaseUrl = "https://njhqyhduenphvvhvulwb.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qaHF5aGR1ZW5waHZ2aHZ1bHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MDczNTAsImV4cCI6MjA3OTQ4MzM1MH0.6wfk6Nt_USzJgfA2Exv6w2PzvM6EFazGREfhizrpTks";
+const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function countOrderNumbers() {
+  const { count, error } = await db
+    .from('Data_Ref')
+    .select('*', { count: 'exact', head: true })
+    .not('Order_Number', 'is', null);
+
+  if (error) {
+    console.error("Supabase error:", error);
+    document.getElementById("result").textContent = "Error fetching data: " + error.message;
+    return;
+  }
+
+  console.log("Non-null order numbers:", count);
+  document.getElementById("result").textContent = "Refund Orders: " + (count || 0);
+}
+
+// Price Match Variables
+const MAX_PARTS = 100;
+const MAX_PRICE = 999999;
+const MAX_COUNTER = 999999;
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyvGrtpk8RRBvBdOYJd4Z2sCAMahrR6n6MId97t6CSfROvtOwmpDQ2Co69ssWa4cz2x/exec';
+
+let partPrices = [];
+let selectedIndices = [];
+let kitPrice = 0;
+let ratio = 0;
+let counter = 0;
+
+function getStoredCounter() {
+  try {
+    const stored = Number(window.sessionStorage.getItem("counter"));
+    if (isNaN(stored) || stored < 0 || stored > MAX_COUNTER) return 0;
+    return Math.floor(stored);
+  } catch (e) {
+    console.warn("Storage access failed:", e);
+    return 0;
+  }
+}
+
+function setStoredCounter(value) {
+  try {
+    window.sessionStorage.setItem("counter", Math.floor(value));
+  } catch (e) {
+    console.warn("Storage save failed:", e);
+  }
+}
+
+function sanitizeNumber(value, max = MAX_PRICE) {
+  const num = Number(value);
+  if (isNaN(num) || num < 0) return 0;
+  return Math.min(num, max);
+}
+
+function showError(element, message) {
+  element.textContent = message;
+  element.style.display = 'block';
+}
+
+function hideError(element) {
+  element.style.display = 'none';
+}
+
+function isPadPart(partName) {
+  if (!partName) return false;
+  const lowerName = partName.toLowerCase();
+  const padKeywords = [
+    'brake pad', 'brake pads', 'front pad', 'rear pad',
+    'ceramic pad', 'metallic pad', 'semi-metallic pad',
+    'organic pad', 'disc pad', 'drum pad'
+  ];
+  return padKeywords.some(keyword => lowerName.includes(keyword));
+}
+
+function updateTotals() {
+  const kitPriceInput = document.getElementById("kitPrice");
+  const refundTotalSpan = document.getElementById("refundTotal");
+  const deductionTotalSpan = document.getElementById("deductionTotal");
+  const messageSpan = document.getElementById("message");
+
+  kitPrice = sanitizeNumber(kitPriceInput.value);
+
+  const totalSelected = selectedIndices.reduce((sum, i) => sum + partPrices[i], 0);
+  const totalDeduction = partPrices.reduce((sum, p, i) => 
+    selectedIndices.includes(i) ? sum : sum + p, 0);
+
+  if (kitPrice > 0 && totalSelected > 0) {
+    ratio = kitPrice / totalSelected;
+  } else {
+    ratio = 0;
+  }
+
+  const rows = document.querySelectorAll(".part-row");
+  rows.forEach((row, i) => {
+    const refundInput = row.querySelector("input[readonly]");
+    const checkbox = row.querySelector("input[type='checkbox']");
+    
+    if (checkbox && checkbox.checked && ratio > 0) {
+      const refundAmount = partPrices[i] * ratio;
+      refundInput.value = refundAmount.toFixed(2);
+    } else {
+      refundInput.value = "0.00";
+    }
+  });
+
+  const refundTotal = totalSelected * ratio;
+  refundTotalSpan.textContent = refundTotal.toFixed(2);
+  deductionTotalSpan.textContent = totalDeduction.toFixed(2);
+
+  if (kitPrice > 0 && totalSelected > 0) {
+    const diff = kitPrice - refundTotal;
+    if (Math.abs(diff) < 0.01) {
+      messageSpan.textContent = "✓ Perfect match!";
+      messageSpan.style.background = "rgba(76, 175, 80, 0.2)";
+      messageSpan.style.color = "#4caf50";
+    } else if (diff > 0) {
+      messageSpan.textContent = `Customer owes $${diff.toFixed(2)}`;
+      messageSpan.style.background = "rgba(255, 152, 0, 0.2)";
+      messageSpan.style.color = "#ff9800";
+    } else {
+      messageSpan.textContent = `Over by $${Math.abs(diff).toFixed(2)}`;
+      messageSpan.style.background = "rgba(244, 67, 54, 0.2)";
+      messageSpan.style.color = "#f44336";
+    }
+    messageSpan.style.display = "block";
+  } else {
+    messageSpan.style.display = "none";
+  }
+}
+
+function createPartRow() {
+  const partsContainer = document.getElementById("partsContainer");
+  const row = document.createElement("div");
+  row.className = "part-row";
+
+  const qtyInput = document.createElement("input");
+  qtyInput.type = "number";
+  qtyInput.min = "1";
+  qtyInput.max = "999";
+  qtyInput.value = "1";
+  qtyInput.placeholder = "Qty";
+
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.placeholder = "Part Name";
+  nameInput.maxLength = 200;
+
+  const partNumInput = document.createElement("input");
+  partNumInput.type = "text";
+  partNumInput.placeholder = "Part #";
+  partNumInput.maxLength = 100;
+
+  const priceInput = document.createElement("input");
+  priceInput.type = "number";
+  priceInput.min = "0";
+  priceInput.max = MAX_PRICE.toString();
+  priceInput.step = "0.01";
+  priceInput.placeholder = "Price";
+
+  const refundInput = document.createElement("input");
+  refundInput.type = "text";
+  refundInput.readOnly = true;
+  refundInput.value = "0.00";
+  refundInput.placeholder = "Refund";
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "refund-checkbox";
+
+  partPrices.push(0);
+  const idx = partPrices.length - 1;
+
+  function updatePartPrice() {
+    const qty = sanitizeNumber(qtyInput.value, 999);
+    const price = sanitizeNumber(priceInput.value);
+    partPrices[idx] = qty * price;
+    updateTotals();
+  }
+
+  qtyInput.addEventListener("input", updatePartPrice);
+  priceInput.addEventListener("input", updatePartPrice);
+
+  checkbox.addEventListener("change", () => {
+    if (checkbox.checked) {
+      if (!selectedIndices.includes(idx)) selectedIndices.push(idx);
+    } else {
+      selectedIndices = selectedIndices.filter(i => i !== idx);
+    }
+    updateTotals();
+  });
+
+  nameInput.addEventListener("input", () => {
+    if (isPadPart(nameInput.value)) {
+      qtyInput.value = "1";
+      qtyInput.style.background = "rgba(115, 175, 111, 0.2)";
+      qtyInput.title = "Pad detected - Quantity locked to 1";
+      updatePartPrice();
+    } else {
+      qtyInput.style.background = "";
+      qtyInput.title = "";
+    }
+  });
+
+  row.appendChild(qtyInput);
+  row.appendChild(nameInput);
+  row.appendChild(partNumInput);
+  row.appendChild(priceInput);
+  row.appendChild(refundInput);
+  row.appendChild(checkbox);
+
+  partsContainer.appendChild(row);
+}
+
+function removePartRow() {
+  const rows = document.querySelectorAll(".part-row");
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+  const checkbox = lastRow.querySelector("input[type='checkbox']");
+  const idx = partPrices.length - 1;
+
+  if (checkbox && checkbox.checked) {
+    selectedIndices = selectedIndices.filter(i => i !== idx);
+  }
+
+  partPrices.pop();
+  selectedIndices = selectedIndices.filter(i => i < partPrices.length);
+  lastRow.remove();
+  updateTotals();
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Initializing Price Match System...");
+  
+  // Load counter
+  counter = getStoredCounter();
+  document.getElementById("counter").textContent = counter;
+  
+  // Load Supabase data
+  countOrderNumbers();
+  
+  // Get elements
+  const kitPriceInput = document.getElementById("kitPrice");
+  const clearBtn = document.getElementById("clearBtn");
+  const addPartBtn = document.getElementById("addPartBtn");
+  const removePartBtn = document.getElementById("removePartBtn");
+  const kitNumberInput = document.getElementById("kitNumberInput");
+  const lookupBtn = document.getElementById("lookupBtn");
+  const lookupError = document.getElementById("lookupError");
+  const lookupStatus = document.getElementById("lookupStatus");
+  const bulkInputError = document.getElementById("bulkInputError");
+  const kitPriceError = document.getElementById("kitPriceError");
+  
+  // Event listeners
+  kitPriceInput.addEventListener("input", updateTotals);
+  
+  clearBtn.onclick = function() {
+    console.log("Clear button clicked");
+    if (counter < MAX_COUNTER) {
+      counter++;
+      setStoredCounter(counter);
+      document.getElementById("counter").textContent = counter;
+    }
+
+    kitPriceInput.value = "";
+    kitNumberInput.value = "";
+    kitPrice = 0;
+    selectedIndices = [];
+    partPrices = partPrices.map(_ => 0);
+
+    document.querySelectorAll(".part-row input").forEach(inp => {
+      if (inp.type === "checkbox") inp.checked = false;
+      else if (inp.type === "number" && inp.placeholder === "Qty") inp.value = "1";
+      else if (!inp.readOnly) inp.value = "";
+    });
+
+    document.getElementById("refundTotal").textContent = "0.00";
+    document.getElementById("deductionTotal").textContent = "0.00";
+    document.getElementById("message").style.display = 'none';
+    hideError(kitPriceError);
+    hideError(bulkInputError);
+    hideError(lookupError);
+    lookupStatus.style.display = 'none';
+    updateTotals();
+  };
+  
+  addPartBtn.onclick = function() {
+    console.log("Add button clicked");
+    if (partPrices.length >= MAX_PARTS) {
+      showError(bulkInputError, `Maximum ${MAX_PARTS} parts allowed`);
+      return;
+    }
+    hideError(bulkInputError);
+    createPartRow();
+  };
+  
+  removePartBtn.onclick = function() {
+    console.log("Remove button clicked");
+    removePartRow();
+  };
+  
+  lookupBtn.onclick = async function() {
+    const kitNumber = kitNumberInput.value.trim();
+    
+    if (!kitNumber) {
+      showError(lookupError, "Please enter a kit number");
+      return;
+    }
+
+    hideError(lookupError);
+    lookupStatus.textContent = "🔄 Looking up kit components...";
+    lookupStatus.style.display = "block";
+    lookupStatus.style.background = "rgba(115, 175, 111, 0.2)";
+    lookupStatus.style.color = "#73AF6F";
+    lookupBtn.disabled = true;
+
+    try {
+      const response = await fetch(`${GOOGLE_SHEETS_URL}?action=lookup&kitNumber=${encodeURIComponent(kitNumber)}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        showError(lookupError, data.error);
+        lookupStatus.style.display = "none";
+        lookupBtn.disabled = false;
+        return;
+      }
+
+      if (data.components && data.components.length > 0) {
+        while (partPrices.length > 0) {
+          removePartRow();
+        }
+
+        data.components.forEach((component, index) => {
+          createPartRow();
+          
+          const rows = document.querySelectorAll(".part-row");
+          const row = rows[index];
+          
+          if (row) {
+            const inputs = row.querySelectorAll("input:not([type='checkbox']):not([readonly])");
+            if (inputs.length >= 4) {
+              inputs[0].value = component.quantity || "1";
+              inputs[1].value = component.subComponent || "";
+              inputs[2].value = component.subComponent || "";
+              inputs[3].value = "";
+              
+              if (isPadPart(component.subComponent)) {
+                inputs[0].value = "1";
+                inputs[0].style.background = "rgba(115, 175, 111, 0.2)";
+                inputs[0].title = "Pad detected - Quantity locked to 1";
+              }
+            }
+          }
+        });
+
+        lookupStatus.textContent = `✓ Found ${data.components.length} components for kit ${kitNumber}`;
+        lookupStatus.style.background = "rgba(76, 175, 80, 0.2)";
+        lookupStatus.style.color = "#4caf50";
+        
+        setTimeout(() => {
+          lookupStatus.style.display = "none";
+        }, 3000);
+      } else {
+        showError(lookupError, `No components found for kit number: ${kitNumber}`);
+        lookupStatus.style.display = "none";
+      }
+
+    } catch (error) {
+      console.error('Lookup error:', error);
+      showError(lookupError, "Failed to lookup kit. Please check your connection and try again.");
+      lookupStatus.style.display = "none";
+    } finally {
+      lookupBtn.disabled = false;
+    }
+  };
+  
+  kitNumberInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      lookupBtn.click();
+    }
+  });
+  
+  // Bulk paste functionality
+  const bulkInput = document.getElementById("bulkInput");
+  
+  bulkInput.addEventListener("paste", function(e) {
+    setTimeout(() => {
+      const text = bulkInput.value.trim();
+      if (!text) return;
+      
+      const lines = text.split('\n').filter(line => line.trim());
+      
+      if (lines.length === 0) {
+        showError(bulkInputError, "No valid data found");
+        return;
+      }
+      
+      if (lines.length > MAX_PARTS) {
+        showError(bulkInputError, `Too many parts. Maximum ${MAX_PARTS} allowed`);
+        return;
+      }
+      
+      // Clear existing parts
+      while (partPrices.length > 0) {
+        removePartRow();
+      }
+      
+      // Process each line
+      lines.forEach(line => {
+        // Try to parse: Qty | Part Name | Part #
+        const parts = line.split('|').map(p => p.trim());
+        
+        createPartRow();
+        
+        const rows = document.querySelectorAll(".part-row");
+        const row = rows[rows.length - 1];
+        
+        if (row) {
+          const inputs = row.querySelectorAll("input:not([type='checkbox']):not([readonly])");
+          
+          if (parts.length >= 3) {
+            // Format: Qty | Part Name | Part #
+            inputs[0].value = parts[0] || "1";
+            inputs[1].value = parts[1] || "";
+            inputs[2].value = parts[2] || "";
+          } else if (parts.length === 2) {
+            // Format: Part Name | Part #
+            inputs[0].value = "1";
+            inputs[1].value = parts[0] || "";
+            inputs[2].value = parts[1] || "";
+          } else if (parts.length === 1) {
+            // Format: Part Name only
+            inputs[0].value = "1";
+            inputs[1].value = parts[0] || "";
+            inputs[2].value = "";
+          }
+          
+          // Check if it's a pad part
+          if (isPadPart(inputs[1].value)) {
+            inputs[0].value = "1";
+            inputs[0].style.background = "rgba(115, 175, 111, 0.2)";
+            inputs[0].title = "Pad detected - Quantity locked to 1";
+          }
+        }
+      });
+      
+      // Clear the textarea
+      bulkInput.value = "";
+      hideError(bulkInputError);
+      
+      // Show success message
+      const lookupStatus = document.getElementById("lookupStatus");
+      lookupStatus.textContent = `✓ Added ${lines.length} parts from paste`;
+      lookupStatus.style.background = "rgba(76, 175, 80, 0.2)";
+      lookupStatus.style.color = "#4caf50";
+      lookupStatus.style.display = "block";
+      
+      setTimeout(() => {
+        lookupStatus.style.display = "none";
+      }, 3000);
+    }, 10);
+  });
+  
+  // Create initial 3 rows
+  for (let i = 0; i < 3; i++) {
+    createPartRow();
+  }
+  
+  console.log("Price Match System initialized successfully!");
+});
+</script>
+
+</body>
+</html>
