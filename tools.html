@@ -1,4 +1,4 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>X2</title>
@@ -537,6 +537,17 @@ button:disabled {
           </div>
 
           <div id="partsContainer" style="max-height: 500px; overflow-y: auto;"></div>
+
+          <div id="emailSection" style="display: none; margin-top: 20px; padding: 15px; background: #435663; border-radius: 5px;">
+            <h3 style="margin-bottom: 10px; color: white;">Email Template</h3>
+            <textarea id="emailTemplate" style="width: 100%; min-height: 150px; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; resize: vertical; background: rgba(0,0,0,0.3); color: white;"></textarea>
+            <div style="margin-top: 10px;">
+              <button id="saveTemplateBtn" style="padding: 8px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Save Template</button>
+              <button id="sendEmailBtn" style="padding: 8px 16px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Email</button>
+            </div>
+          </div>
+
+          <div id="notesLog" style="margin-top: 20px; padding: 15px; background: #435663; border-radius: 5px;"></div>
         </div>
       `;
 
@@ -554,6 +565,17 @@ button:disabled {
       document.getElementById('removePartBtn').addEventListener('click', () => this.removePartRow());
       document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
       document.getElementById('bulkAddBtn').addEventListener('click', () => this.processBulkParts());
+
+      // Email events
+      document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+        const templateText = document.getElementById('emailTemplate').value;
+        localStorage.setItem('savedPriceMatchTemplate', templateText);
+        alert('Template saved to localStorage!');
+      });
+
+      document.getElementById('sendEmailBtn').addEventListener('click', () => {
+        this.simulateSend();
+      });
     },
 
     processBulkParts() {
@@ -619,7 +641,7 @@ button:disabled {
       row.innerHTML = `
         <input type="number" min="1" value="${qty}" placeholder="Qty" class="qtyInput" style="${qtyStyle}" ${isPad ? 'readonly title="Pad detected - Quantity locked to 1"' : ''}>
         <input type="text" placeholder="Part Name" value="${partName}" class="partNameInput" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center;">
-        <input type="text" placeholder="Part #" value="${partNumber}" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center;">
+        <input type="text" placeholder="Part #" value="${partNumber}" class="partNumberInput" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center;">
         <input type="number" min="0" step="0.01" placeholder="Price" class="priceInput" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px text-align: center;">
         <input type="text" readonly class="refundDisplay" value="0.00" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; background: #e0e0e0; text-align: center;">
         <input type="checkbox" class="checkbox" style="width: 20px; height: 20px; cursor: pointer;">
@@ -662,7 +684,83 @@ button:disabled {
       document.getElementById('kitPriceInput').value = '';
       document.getElementById('bulkInput').value = '';
       document.getElementById('partsContainer').innerHTML = '';
+      document.getElementById('emailSection').style.display = 'none';
+      document.getElementById('notesLog').innerHTML = '';
       this.updateTotals();
+    },
+
+    generateEmailTemplate(totals, selectedIndices) {
+      const rows = document.querySelectorAll('#partsContainer [data-index]');
+      let partsList = '';
+      selectedIndices.forEach(idx => {
+        const row = rows[idx];
+        const qty = parseFloat(row.querySelector('.qtyInput').value) || 1;
+        const name = row.querySelector('.partNameInput').value || 'Unnamed Part';
+        const partNumber = row.querySelector('.partNumberInput').value || '';
+        partsList += `• ${qty} x ${name}`;
+        if (partNumber) partsList += ` (SKU: ${partNumber})`;
+        partsList += '\n';
+      });
+      if (!partsList.trim()) partsList = 'No parts selected.';
+      const template = `Subject: Confirmation of Price Match Refund
+
+Dear Valued Customer,
+
+We hope this email finds you well.
+
+We are happy to confirm that your price match request has been processed successfully.
+
+**Refund Amount:** $${totals.refund.toFixed(2)}
+
+**Deduction Amount:** $${totals.deduction.toFixed(2)}
+
+The refund applies to the following parts in your kit:
+
+${partsList}
+
+Please allow 3-5 business days for the refund to process to your original payment method.
+
+If you have any questions or need further assistance, feel free to reply to this email.
+
+Thank you for choosing us!
+
+Best regards,  
+Johnson  
+Customer Service Agent  
+[Company Name]  
+support@company.com`;
+      document.getElementById('emailTemplate').value = template;
+    },
+
+    simulateSend() {
+      const rows = document.querySelectorAll('#partsContainer [data-index]');
+      let refundTotal = 0;
+      let skus = [];
+      rows.forEach((row, index) => {
+        const checkbox = row.querySelector('.checkbox');
+        if (checkbox.checked) {
+          const partNumber = row.querySelector('.partNumberInput').value.trim();
+          if (partNumber) skus.push(partNumber);
+          const qty = parseFloat(row.querySelector('.qtyInput').value) || 1;
+          const price = parseFloat(row.querySelector('.priceInput').value) || 0;
+          const lineTotal = qty * price;
+          refundTotal += Calculator.calculateRefundForPart(lineTotal);
+        }
+      });
+      const refundAmt = refundTotal.toFixed(2);
+      const skusStr = skus.length > 0 ? skus.join(', ') : 'N/A';
+      const now = new Date();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const day = now.getDate().toString().padStart(2, '0');
+      const dateStr = `${month}/${day}`;
+      const note = `${dateStr} Follow Up - parts are in a good condition(${skusStr}) , refund form submitted ($${refundAmt}) , Email sent , Johnson`;
+      const notesLog = document.getElementById('notesLog');
+      let logContent = notesLog.innerHTML;
+      if (!logContent.trim()) {
+        logContent = '<h4 style="margin-top: 0; color: white;">Activity Log:</h4>';
+      }
+      notesLog.innerHTML = logContent + `<div class="status-message" style="background: #e8f5e9; color: #2e7d32; margin-bottom: 10px;">${note}</div>`;
+      alert('Email sent successfully! Note added to log.');
     },
 
     updateTotals() {
@@ -687,6 +785,16 @@ button:disabled {
       const totals = Calculator.calculateTotals(selectedIndices);
       document.getElementById('refundTotal').textContent = totals.refund.toFixed(2);
       document.getElementById('deductionTotal').textContent = totals.deduction.toFixed(2);
+
+      const emailSection = document.getElementById('emailSection');
+      if (emailSection) {
+        if (totals.refund > 0) {
+          emailSection.style.display = 'block';
+          this.generateEmailTemplate(totals, selectedIndices);
+        } else {
+          emailSection.style.display = 'none';
+        }
+      }
     }
   };
 
@@ -697,5 +805,6 @@ button:disabled {
 })();
 </script>
   
+
 </body>
 </html>
