@@ -23,7 +23,7 @@
 }
 
 .main-menu {
-  background: #73AF6F;
+  background: #703B3B;
   border-right: 1px solid #e5e5e5;
   position: fixed;
   top: 0;
@@ -64,7 +64,7 @@
 .main-menu li:hover > a,
 .main-menu li.active > a {
   color: #fff;
-  background: #435663;
+  background: #A18D6D;
 }
 
 .main-menu .nav-icon {
@@ -127,7 +127,7 @@ input[type="text"],
 textarea {
   background: rgba(0, 0, 0, 0.3);
   color: white;
-  border: 2px solid #73AF6F;
+  border: 2px solid #703B3B;
   border-radius: 0.5rem;
   padding: 0.75rem;
   font-size: 0.95rem;
@@ -139,7 +139,7 @@ textarea {
 input[type="number"]:focus,
 input[type="text"]:focus,
 textarea:focus {
-  border-color: #435663;
+  border-color: #A18D6D;
   box-shadow: 0 0 0 3px rgba(115, 175, 111, 0.2);
 }
 
@@ -161,7 +161,7 @@ textarea {
 }
 
 button {
-  background: #73AF6F;
+  background: #703B3B;
   color: white;
   border: none;
   border-radius: 2rem;
@@ -174,7 +174,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background: #435663;
+  background: #A18D6D;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(67, 86, 99, 0.4);
 }
@@ -306,7 +306,7 @@ button:disabled {
 
 </head>
 
-<body style="background-image: linear-gradient(90.2deg, #73AF6F -0.4%, #435663 106.1%); color:white; font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;">
+<body style="background-image: linear-gradient(90.2deg, #703B3B -0.4%); color:white; font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;">
 
 <div class="area"></div>
 <nav class="main-menu">
@@ -502,27 +502,27 @@ button:disabled {
 
     render() {
       this.container.innerHTML = `
-        <div style="font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; border: 2px solid #333; border-radius: 8px; background: #435663">
+        <div style="font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; border: 2px solid white; border-radius: 8px; background: #435663; background:#A18D6D">
           <h2 style="text-align: center; margin-bottom: 20px;">Price Match</h2>
           
-          <div style="margin-bottom: 20px; padding: 15px; background: #435663; border-radius: 5px;">
+          <div style="margin-bottom: 20px; padding: 15px; background: #A18D6D; border-radius: 5px;">
             <center><label style="display: block; margin-bottom: 8px; font-weight: bold;">|Kit Price|</label>
             <center><input type="number" id="kitPriceInput" min="0" step="0.01" placeholder="0.00" 
                    style="width: 90%; padding: 20px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;">
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-            <div style="padding: 15px; background: #435663; border-radius: 5px; text-align: center;">
+            <div style="padding: 15px; background: #A18D6D; border-radius: 5px; text-align: center;">
               <div style="font-size: 12px; margin-bottom: 5px;">Refund Amount</div>
               <div style="font-size: 24px; font-weight: bold; color: #2e7d32;">$<span id="refundTotal">0.00</span></div>
             </div>
-            <div style="padding: 15px; background: #435663; border-radius: 5px; text-align: center;">
+            <div style="padding: 15px; background: #A18D6D; border-radius: 5px; text-align: center;">
               <div style="font-size: 12px; margin-bottom: 5px;">Deduction Amount</div>
               <div style="font-size: 24px; font-weight: bold; color: #e65100;">$<span id="deductionTotal">0.00</span></div>
             </div>
           </div>
 
-          <div style="margin-bottom: 20px; padding: 15px; background: #435663; border-radius: 5px;">
+          <div style="margin-bottom: 20px; padding: 15px; background: #A18D6D; border-radius: 5px;">
             <label style="display: block; margin-bottom: 8px; font-weight: bold;">Bulk Add Parts:</label>
             <textarea id="bulkInput" placeholder="Paste parts here (one per line)&#10;Example:&#10;1 Rack and Pinion Tie Rod Boots (Pair) BT-201x2&#10;2 Front Driver or Passenger Side Outer Tie Rod ES2814&#10;1 Front Brake Pads ABC123" 
                       style="width: 100%; min-height: 100px; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; resize: vertical;"></textarea>
@@ -531,14 +531,14 @@ button:disabled {
           </div>
 
           <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-            <button id="addPartBtn" style="padding: 10px 20px; background: #435663; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Add Part</button>
+            <button id="addPartBtn" style="padding: 10px 20px; background: green; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Add Part</button>
             <button id="removePartBtn" style="padding: 10px 20px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Remove Part</button>
             <button id="clearBtn" style="padding: 10px 20px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Clear All</button>
           </div>
 
           <div id="partsContainer" style="max-height: 500px; overflow-y: auto;"></div>
 
-          <div id="emailSection" style="display: none; margin-top: 20px; padding: 15px; background: #435663; border-radius: 5px;">
+          <div id="emailSection" style="display: none; margin-top: 20px; padding: 15px; background: #A18D6D; border-radius: 5px;">
             <h3 style="margin-bottom: 10px; color: white;">Email Template</h3>
             <textarea id="emailTemplate" style="width: 100%; min-height: 150px; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; resize: vertical; background: rgba(0,0,0,0.3); color: white;"></textarea>
             <div style="margin-top: 10px;">
@@ -547,7 +547,7 @@ button:disabled {
             </div>
           </div>
 
-          <div id="notesLog" style="margin-top: 20px; padding: 15px; background: #435663; border-radius: 5px;"></div>
+          <div id="notesLog" style="margin-top: 20px; padding: 15px; background: #A18D6D; border-radius: 5px;"></div>
         </div>
       `;
 
@@ -631,11 +631,11 @@ button:disabled {
       if (isPad) qty = 1;
       
       const row = document.createElement('div');
-      row.style.cssText = 'display: grid; grid-template-columns: 70px 1fr 100px 90px 90px 35px; gap: 8px; padding: 10px; margin-bottom: 8px; background: #435663; border: 1px solid #ddd; border-radius: 4px; align-items: center;';
+      row.style.cssText = 'display: grid; grid-template-columns: 70px 1fr 100px 90px 90px 35px; gap: 8px; padding: 10px; margin-bottom: 8px; background: #A18D6D; border: 1px solid #ddd; border-radius: 4px; align-items: center;';
       row.dataset.index = index;
       
       const qtyStyle = isPad 
-        ? 'width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center; background: #ffe0b2;'
+        ? 'width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center; background: #A18D6D;'
         : 'width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 3px; text-align: center;';
       
       row.innerHTML = `
@@ -712,8 +712,6 @@ We are happy to confirm that your price match request has been processed success
 
 **Refund Amount:** $${totals.refund.toFixed(2)}
 
-**Deduction Amount:** $${totals.deduction.toFixed(2)}
-
 The refund applies to the following parts in your kit:
 
 ${partsList}
@@ -724,11 +722,10 @@ If you have any questions or need further assistance, feel free to reply to this
 
 Thank you for choosing us!
 
-Best regards,  
-Johnson  
-Customer Service Agent  
-[Company Name]  
-support@company.com`;
+Best regards,    
+Customer Service Team  
+Detroit Axle
+`;
       document.getElementById('emailTemplate').value = template;
     },
 
