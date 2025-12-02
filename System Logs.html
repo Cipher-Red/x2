@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2 DETROITAXLE | System Logs</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Titillium+Web:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dashboard: {
+                            dark: '#1c1917', card: '#292524', hover: '#44403c', text: '#e7e5e4',
+                            muted: '#a8a29e', accent: '#d97706', accentHover: '#b45309', border: '#57534e'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Titillium Web', 'sans-serif'], serif: ['Cinzel', 'serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+        .glass-panel { background: rgba(41, 37, 36, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(217, 119, 6, 0.15) 0%, rgba(0,0,0,0) 100%); border-left: 3px solid #d97706; color: #d97706; }
+        .terminal-text { font-family: 'Courier New', Courier, monospace; }
+    </style>
+</head>
+<body class="bg-dashboard-dark text-dashboard-text font-sans antialiased overflow-hidden h-screen flex">
+
+    <aside class="w-64 h-full bg-[#151210] border-r border-dashboard-border flex flex-col z-20 shadow-2xl">
+        <div class="h-20 flex items-center px-6 border-b border-dashboard-border bg-[#0f0d0c]">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-dashboard-accent to-orange-800 flex items-center justify-center text-white font-bold mr-3 shadow-lg shadow-orange-900/50">X2</div>
+            <div><h1 class="font-serif text-xl tracking-wider text-white">DETROITAXLE</h1><p class="text-xs text-dashboard-muted uppercase tracking-widest">Follow-up Team</p></div>
+        </div>
+        <nav class="flex-1 py-6 overflow-y-auto">
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4">Main Menu</p>
+            <ul class="space-y-1">
+                <li><a href="index.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-gauge-high w-6 text-center mr-2"></i>Dashboard</a></li>
+                <li><a href="Tasks &amp; Tools.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-box-open w-6 text-center mr-2"></i>Tasks &amp; Tools</a></li>
+                <li><a href="Shipping &amp; Returns.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-truck-fast w-6 text-center mr-2"></i>Shipping &amp; Returns</a></li>
+                <li><a href="Customer Relations.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-users-gear w-6 text-center mr-2"></i>CRM &amp; Follow-up</a></li>
+            </ul>
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4 mt-8">System</p>
+            <ul class="space-y-1">
+                <li><a href="System Logs.html" class="nav-item active flex items-center px-6 py-3 text-sm font-medium transition-colors"><i class="fa-solid fa-database w-6 text-center mr-2"></i>Supabase Logs</a></li>
+                <li><a href="Settings.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-gear w-6 text-center mr-2"></i>Settings</a></li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-dashboard-border"><div class="flex items-center gap-3 p-2 rounded-lg bg-dashboard-card hover:bg-dashboard-hover cursor-pointer transition-colors"><img src="https://ui-avatars.com/api/?name=Admin+User&background=d97706&color=fff" class="w-10 h-10 rounded-full border border-dashboard-accent"><div class="flex-1 min-w-0"><p class="text-sm font-medium text-white truncate">Warehouse Mgr.</p><p class="text-xs text-dashboard-muted truncate">admin@x2parts.com</p></div><i class="fa-solid fa-right-from-bracket text-dashboard-muted hover:text-white"></i></div></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#29221f] to-transparent pointer-events-none -z-10"></div>
+        
+        <header class="h-20 flex items-center justify-between px-8 z-10 shrink-0">
+            <div>
+                <h2 class="text-2xl font-serif text-white tracking-wide">System Logs</h2>
+                <div class="flex items-center text-xs text-dashboard-muted mt-1 space-x-2"><span>Database</span><i class="fa-solid fa-chevron-right text-[10px]"></i><span class="text-dashboard-accent">Connection Status</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="flex h-3 w-3 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
+                <span class="text-xs text-green-400 font-mono">LIVE CONNECTION</span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-hidden p-8 pt-2 flex flex-col">
+            <!-- Terminal Window -->
+            <div class="flex-1 bg-black rounded-xl border border-stone-800 shadow-2xl flex flex-col overflow-hidden animate-fade-in font-mono text-sm">
+                <div class="bg-[#1a1a1a] p-2 flex items-center gap-2 border-b border-[#333]">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-2 text-xs text-stone-500">supabase-client-v2.log</span>
+                </div>
+                <div id="log-container" class="flex-1 p-4 overflow-y-auto text-stone-300 space-y-1">
+                    <!-- Logs will stream in here dynamically -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const supabaseUrl = "https://njhqyhduenphvvhvulwb.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qaHF5aGR1ZW5waHZ2aHZ1bHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MDczNTAsImV4cCI6MjA3OTQ4MzM1MH0.6wfk6Nt_USzJgfA2Exv6w2PzvM6EFazGREfhizrpTks";
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+        const logContainer = document.getElementById('log-container');
+
+        function addLog(msg, color = 'text-stone-300') {
+            const div = document.createElement('div');
+            const time = new Date().toLocaleTimeString();
+            div.className = `${color} hover:bg-white/5 px-1`;
+            div.innerHTML = `<span class="text-stone-600">[${time}]</span> ${msg}`;
+            logContainer.appendChild(div);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        async function pingDatabase() {
+            addLog("Checking 'Data_Ref' table connection...", 'text-blue-400');
+            const start = Date.now();
+            const { count, error } = await db.from('Data_Ref').select('*', { count: 'exact', head: true });
+            
+            if (error) {
+                addLog(`[ERROR] ${error.message}`, 'text-red-500');
+            } else {
+                const ms = Date.now() - start;
+                addLog(`✓ Success. Found ${count} records in ${ms}ms`, 'text-green-400');
+            }
+        }
+
+        setTimeout(pingDatabase, 1500);
+    </script>
+</body>
+</html>

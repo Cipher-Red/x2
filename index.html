@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2 DETROITAXLE | Logistics Dashboard</title>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Tailwind CSS (for layout) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Titillium+Web:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js (for visual graphs) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Config for Tailwind Colors to match "Cozy Brownish" theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dashboard: {
+                            dark: '#1c1917',   /* Stone 900 */
+                            card: '#292524',   /* Stone 800 */
+                            hover: '#44403c',  /* Stone 700 */
+                            text: '#e7e5e4',   /* Stone 200 */
+                            muted: '#a8a29e',  /* Stone 400 */
+                            accent: '#d97706', /* Amber 600 - The "Leather" look */
+                            accentHover: '#b45309',
+                            border: '#57534e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Titillium Web', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'] /* For the luxury car brand feel */
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1917; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #57534e; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d97706; 
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(41, 37, 36, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Loading Skeleton Animation */
+        .skeleton {
+            background: linear-gradient(90deg, #292524 25%, #44403c 50%, #292524 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.15) 0%, rgba(0,0,0,0) 100%);
+            border-left: 3px solid #d97706;
+            color: #d97706;
+        }
+    </style>
+</head>
+<body class="bg-dashboard-dark text-dashboard-text font-sans antialiased overflow-hidden h-screen flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 h-full bg-[#151210] border-r border-dashboard-border flex flex-col z-20 shadow-2xl transition-all duration-300">
+        <!-- Brand -->
+        <div class="h-20 flex items-center px-6 border-b border-dashboard-border bg-[#0f0d0c]">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-dashboard-accent to-orange-800 flex items-center justify-center text-white font-bold mr-3 shadow-lg shadow-orange-900/50">
+                X2
+            </div>
+            <div>
+                <h1 class="font-serif text-xl tracking-wider text-white">DETROITAXLE</h1>
+                <p class="text-xs text-dashboard-muted uppercase tracking-widest">Follow-up Team</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 py-6 overflow-y-auto">
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4">Main Menu</p>
+            
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html" class="nav-item active flex items-center px-6 py-3 text-sm font-medium hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-gauge-high w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="Tasks &amp; Tools.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-box-open w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Inventory & Stock
+                    </a>
+                </li>
+                <li>
+                    <a href="Shipping &amp; Returns.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-truck-fast w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Shipping & Returns
+                        <!-- Removed dummy count badge -->
+                    </a>
+                </li>
+                <li>
+                    <a href="Customer Relations.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-users-gear w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        CRM & Follow-up
+                    </a>
+                </li>
+            </ul>
+
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4 mt-8">System</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="System Logs.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-database w-6 text-center mr-2"></i>
+                        Supabase Logs
+                    </a>
+                </li>
+                <li>
+                    <a href="Settings.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-gear w-6 text-center mr-2"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- User Profile (Bottom) -->
+        <div class="p-4 border-t border-dashboard-border">
+            <div class="flex items-center gap-3 p-2 rounded-lg bg-dashboard-card hover:bg-dashboard-hover cursor-pointer transition-colors">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=d97706&color=fff" class="w-10 h-10 rounded-full border border-dashboard-accent">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">Warehouse Mgr.</p>
+                    <p class="text-xs text-dashboard-muted truncate">admin@x2parts.com</p>
+                </div>
+                <i class="fa-solid fa-right-from-bracket text-dashboard-muted hover:text-white"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Decorative Background Gradient -->
+        <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#29221f] to-transparent pointer-events-none -z-10"></div>
+
+        <!-- Top Header -->
+        <header class="h-20 flex items-center justify-between px-8 z-10">
+            <div>
+                <h2 class="text-2xl font-serif text-white tracking-wide">Overview</h2>
+                <div class="flex items-center text-xs text-dashboard-muted mt-1 space-x-2">
+                    <span>Home</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span class="text-dashboard-accent">Dashboard</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <!-- Search -->
+                <div class="relative hidden md:block">
+                    <input type="text" placeholder="Search Order ID, Part #..." class="bg-dashboard-card border border-dashboard-border rounded-full py-2 px-4 pl-10 text-sm focus:outline-none focus:border-dashboard-accent w-64 text-white transition-all focus:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-dashboard-muted"></i>
+                </div>
+                
+                <!-- Notification Bell -->
+                <div class="relative">
+                    <button id="notification-bell" class="relative text-dashboard-muted hover:text-white transition-colors focus:outline-none">
+                        <i class="fa-regular fa-bell text-xl"></i>
+                    </button>
+                    <div id="notification-popover" class="hidden absolute right-0 mt-3 w-56 glass-panel rounded-lg border border-dashboard-border shadow-xl text-xs text-dashboard-muted py-3 px-4 z-20">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-regular fa-bell mt-0.5 text-dashboard-accent"></i>
+                            <div>
+                                <p class="font-semibold text-white mb-1">No notifications</p>
+                                <p class="text-[11px] text-dashboard-muted/80">You're all caught up. New alerts will appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-8 pt-2">
+            
+            <!-- KPI Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-fade-in">
+                
+                <!-- KPI 1: Refunds (Real Data) -->
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group hover:border-dashboard-accent/50 transition-all duration-300">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fa-solid fa-rotate-left text-6xl text-dashboard-accent"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-red-900/20 rounded-lg text-red-500">
+                            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-dashboard-muted text-sm font-medium uppercase tracking-wider">Refund Cases</h3>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span id="refund-count" class="text-3xl font-bold text-white">
+                            <!-- Loader -->
+                            <div class="h-8 w-16 skeleton inline-block align-middle"></div>
+                        </span>
+                        <span class="text-sm text-dashboard-muted">Pending</span>
+                    </div>
+                    <div class="mt-4 h-1 w-full bg-dashboard-dark rounded-full overflow-hidden">
+                        <div class="h-full bg-red-500 w-[60%]"></div>
+                    </div>
+                </div>
+
+                <!-- KPI 2: Exchanges (Placeholder) -->
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group hover:border-dashboard-accent/50 transition-all duration-300">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fa-solid fa-arrow-right-arrow-left text-6xl text-dashboard-accent"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-dashboard-accent/10 rounded-lg text-dashboard-accent">
+                            <i class="fa-solid fa-boxes-packing text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-dashboard-muted text-sm font-medium uppercase tracking-wider">Active Exchanges</h3>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span id="exchange-count" class="text-3xl font-bold text-white">--</span>
+                        <span class="text-sm text-dashboard-muted">Total</span>
+                    </div>
+                    <p class="text-xs text-dashboard-muted mt-1">No recent data</p>
+                    <div class="mt-4 h-1 w-full bg-dashboard-dark rounded-full overflow-hidden">
+                        <div class="h-full bg-dashboard-accent w-[0%]"></div>
+                    </div>
+                </div>
+
+                <!-- KPI 3: Shipping (Placeholder) -->
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group hover:border-dashboard-accent/50 transition-all duration-300">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fa-solid fa-truck-ramp-box text-6xl text-dashboard-accent"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-blue-900/20 rounded-lg text-blue-400">
+                            <i class="fa-solid fa-plane-departure text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-dashboard-muted text-sm font-medium uppercase tracking-wider">Outbound Orders</h3>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span id="shipping-count" class="text-3xl font-bold text-white">--</span>
+                        <span class="text-sm text-dashboard-muted">Parts</span>
+                    </div>
+                    <div class="mt-4 h-1 w-full bg-dashboard-dark rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-500 w-[0%]"></div>
+                    </div>
+                </div>
+
+                <!-- KPI 4: Warehouse Capacity (Placeholder) -->
+                <div class="glass-panel p-6 rounded-xl relative overflow-hidden group hover:border-dashboard-accent/50 transition-all duration-300">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fa-solid fa-warehouse text-6xl text-dashboard-accent"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-stone-700/30 rounded-lg text-stone-300">
+                            <i class="fa-solid fa-dolly text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-dashboard-muted text-sm font-medium uppercase tracking-wider">Warehouse Cap.</h3>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span id="warehouse-count" class="text-3xl font-bold text-white">--%</span>
+                        <span class="text-sm text-dashboard-muted">Filled</span>
+                    </div>
+                    <div class="mt-4 h-1 w-full bg-dashboard-dark rounded-full overflow-hidden">
+                        <div class="h-full bg-stone-400 w-[0%]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid: Chart & Priority List -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-slide-up">
+                
+                <!-- Main Chart Area -->
+                <div class="lg:col-span-2 glass-panel p-6 rounded-xl border border-dashboard-border">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-display font-semibold text-white">Weekly Logistics Performance</h3>
+                            <p class="text-xs text-dashboard-muted">Comparison: Inbound vs Outbound (Parts)</p>
+                        </div>
+                        <select id="logistics-range-select" class="bg-dashboard-dark border border-dashboard-border text-dashboard-muted text-xs rounded-md px-3 py-1 focus:outline-none focus:border-dashboard-accent">
+                            <option value="week">This Week</option>
+                            <option value="day">This Day</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Chart Container -->
+                    <div class="relative h-64 w-full">
+                        <canvas id="logisticsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Priority / Follow-up List -->
+                <div class="glass-panel p-6 rounded-xl border border-dashboard-border flex flex-col">
+                    <h3 class="text-lg font-display font-semibold text-white mb-4">Urgent Follow-ups</h3>
+                    
+                    <div id="followup-list" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+                        <!-- Empty State -->
+                        <div class="text-center py-12 text-dashboard-muted">
+                            <i class="fa-regular fa-clipboard text-2xl mb-2 opacity-50"></i>
+                            <p class="text-xs">No urgent tasks assigned</p>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 py-2 text-xs font-bold text-dashboard-dark bg-dashboard-accent hover:bg-dashboard-accentHover rounded transition-colors uppercase tracking-wider opacity-50 cursor-not-allowed">
+                        View All Tasks
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="glass-panel rounded-xl overflow-hidden border border-dashboard-border animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="p-6 border-b border-dashboard-border flex justify-between items-center">
+                    <h3 class="text-lg font-display font-semibold text-white">Recent Order Activity</h3>
+                    <div class="flex gap-2">
+                        <button id="orders-filter-toggle" class="px-3 py-1.5 text-xs text-white bg-dashboard-hover hover:bg-stone-600 rounded transition-colors"><i class="fa-solid fa-filter mr-1"></i> Filter</button>
+                        <button class="px-3 py-1.5 text-xs text-dashboard-dark bg-white hover:bg-gray-200 rounded transition-colors"><i class="fa-solid fa-download mr-1"></i> Export</button>
+                    </div>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div id="order-filters" class="hidden px-6 py-4 border-b border-dashboard-border bg-dashboard-dark/60">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[11px] uppercase tracking-widest text-dashboard-muted font-semibold">Filter Orders</p>
+                        <button id="orders-filter-clear" class="text-[11px] text-dashboard-muted hover:text-white underline-offset-2 hover:underline">Clear all</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <input data-filter-field="order-id" type="text" placeholder="Order ID" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                        <input data-filter-field="part" type="text" placeholder="Part Details" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                        <input data-filter-field="customer" type="text" placeholder="Customer" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                        <input data-filter-field="status" type="text" placeholder="Status" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                        <input data-filter-field="date" type="text" placeholder="Date" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                        <input data-filter-field="action" type="text" placeholder="Action" class="bg-dashboard-card border border-dashboard-border rounded-md px-3 py-1.5 text-xs text-dashboard-text focus:outline-none focus:border-dashboard-accent">
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-dashboard-muted">
+                        <thead class="bg-dashboard-dark text-xs uppercase font-semibold text-stone-300">
+                            <tr>
+                                <th class="px-6 py-4">Order ID</th>
+                                <th class="px-6 py-4">Part Details</th>
+                                <th class="px-6 py-4">Customer</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body" class="divide-y divide-dashboard-border">
+                             <!-- Empty State for Table -->
+                            <tr id="orders-empty-row">
+                                <td colspan="6" class="px-6 py-12 text-center text-dashboard-muted">
+                                    <i class="fa-solid fa-box-open text-2xl mb-2 opacity-30"></i>
+                                    <p>No recent orders found</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <footer class="mt-8 text-center text-xs text-dashboard-muted opacity-50">
+                &copy; 2025 X2 DETROITAXLE Logistics Systems v2.1. All rights reserved.
+            </footer>
+        </div>
+    </main>
+
+    <!-- LOGIC -->
+    <script>
+        // --- 1. Supabase Logic ---
+        const supabaseUrl = "https://njhqyhduenphvvhvulwb.supabase.co";
+        // NOTE: In a real production app, never expose service keys on client side. Use Supabase Row Level Security (RLS).
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qaHF5aGR1ZW5waHZ2aHZ1bHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MDczNTAsImV4cCI6MjA3OTQ4MzM1MH0.6wfk6Nt_USzJgfA2Exv6w2PzvM6EFazGREfhizrpTks";
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- Fetch Real Data: Refunds ---
+        async function fetchRefundData() {
+            const resultElement = document.getElementById("refund-count");
+            
+            try {
+                // Simulate a slight loading delay for the "professional" feel to let animation run
+                await new Promise(r => setTimeout(r, 800));
+
+                const { count, error } = await db
+                    .from('Data_Ref')
+                    .select('*', { count: 'exact', head: true })
+                    .not('Order_Number', 'is', null);
+
+                if (error) {
+                    console.error("Supabase error:", error);
+                    resultElement.innerHTML = `<span class="text-red-500 text-sm">Error</span>`;
+                    return;
+                }
+
+                console.log("Supabase Data fetched:", count);
+                
+                // Animate numbers
+                animateValue(resultElement, 0, count || 0, 1000);
+                
+            } catch (err) {
+                console.error("Fetch error", err);
+                resultElement.textContent = "--";
+            }
+        }
+
+        // --- Placeholder Functions for Future Data Connections ---
+        async function fetchExchangeData() {
+            // TODO: Connect to Supabase 'Exchanges' table
+            // const { count } = await db.from('Exchanges').select(...)
+            // document.getElementById('exchange-count').textContent = count;
+        }
+
+        async function fetchShippingData() {
+            // TODO: Connect to Supabase 'Shipping' table
+            // document.getElementById('shipping-count').textContent = count;
+        }
+
+        async function fetchWarehouseData() {
+            // TODO: Connect to Warehouse API
+            // document.getElementById('warehouse-count').textContent = data.percentage + '%';
+        }
+
+        async function fetchRecentOrders() {
+            // TODO: Populate 'orders-table-body' with rows from DB
+        }
+
+        // --- 2. UI Logic & Animations ---
+
+        // Helper: Number Counter Animation
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- 3. Chart.js Setup with Range Filtering ---
+        let logisticsChart = null;
+
+        const logisticsChartConfigs = {
+            day: {
+                labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
+                orders: [3, 4, 6, 5, 4, 2],
+                returns: [0, 1, 0, 1, 0, 0]
+            },
+            week: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                orders: [12, 16, 14, 18, 20, 9, 6],
+                returns: [1, 2, 1, 3, 2, 1, 1]
+            },
+            month: {
+                labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4'],
+                orders: [80, 96, 92, 88],
+                returns: [6, 8, 7, 5]
+            },
+            year: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                orders: [320, 340, 360, 380, 400, 390, 410, 430, 420, 410, 395, 380],
+                returns: [22, 24, 26, 25, 27, 26, 28, 30, 29, 28, 27, 26]
+            }
+        };
+
+        function initChart(initialRange = 'week') {
+            const ctx = document.getElementById('logisticsChart').getContext('2d');
+            const config = logisticsChartConfigs[initialRange] || logisticsChartConfigs.week;
+            
+            // Create gradient
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(217, 119, 6, 0.5)'); // Brand color
+            gradient.addColorStop(1, 'rgba(217, 119, 6, 0.0)');
+
+            logisticsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: config.labels,
+                    datasets: [{
+                        label: 'Orders Processed',
+                        data: config.orders,
+                        borderColor: '#d97706', // Amber-600
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        tension: 0.4, 
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#d97706',
+                        fill: true
+                    },
+                    {
+                        label: 'Returns',
+                        data: config.returns,
+                        borderColor: '#78716c', 
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        pointRadius: 0,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#a8a29e' },
+                            position: 'top',
+                            align: 'end'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(87, 83, 78, 0.3)' },
+                            ticks: { color: '#a8a29e' },
+                            beginAtZero: true
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#a8a29e' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartRange(rangeKey) {
+            if (!logisticsChart) return;
+            const config = logisticsChartConfigs[rangeKey] || logisticsChartConfigs.week;
+            logisticsChart.data.labels = config.labels;
+            logisticsChart.data.datasets[0].data = config.orders;
+            logisticsChart.data.datasets[1].data = config.returns;
+            logisticsChart.update();
+        }
+
+        // --- 4. Recent Orders Filtering ---
+        function initOrderFilters() {
+            const toggleBtn = document.getElementById('orders-filter-toggle');
+            const clearBtn = document.getElementById('orders-filter-clear');
+            const panel = document.getElementById('order-filters');
+            const filterInputs = panel ? panel.querySelectorAll('input[data-filter-field]') : null;
+            const tbody = document.getElementById('orders-table-body');
+            const emptyRow = document.getElementById('orders-empty-row');
+
+            if (!toggleBtn || !panel || !filterInputs || !tbody) return;
+
+            const filterState = {
+                'order-id': '',
+                part: '',
+                customer: '',
+                status: '',
+                date: '',
+                action: ''
+            };
+
+            const columnIndexMap = {
+                'order-id': 0,
+                part: 1,
+                customer: 2,
+                status: 3,
+                date: 4,
+                action: 5
+            };
+
+            function applyFilters() {
+                const rows = tbody.querySelectorAll('tr.order-row');
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let match = true;
+
+                    Object.entries(filterState).forEach(([field, value]) => {
+                        if (!value) return;
+                        const colIndex = columnIndexMap[field];
+                        const cell = cells[colIndex];
+                        const text = cell ? cell.textContent.toLowerCase() : '';
+                        if (!text.includes(value)) {
+                            match = false;
+                        }
+                    });
+
+                    row.style.display = match ? '' : 'none';
+                    if (match) visibleCount++;
+                });
+
+                if (emptyRow) {
+                    emptyRow.style.display = visibleCount === 0 ? '' : 'none';
+                }
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                panel.classList.toggle('hidden');
+            });
+
+            clearBtn.addEventListener('click', () => {
+                filterInputs.forEach(input => {
+                    input.value = '';
+                    const field = input.getAttribute('data-filter-field');
+                    if (field && filterState.hasOwnProperty(field)) {
+                        filterState[field] = '';
+                    }
+                });
+                applyFilters();
+            });
+
+            filterInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const field = input.getAttribute('data-filter-field');
+                    if (field && filterState.hasOwnProperty(field)) {
+                        filterState[field] = input.value.toLowerCase().trim();
+                        applyFilters();
+                    }
+                });
+            });
+        }
+
+        // --- 5. Notification Bell Behavior ---
+        function initNotifications() {
+            const bell = document.getElementById('notification-bell');
+            const popover = document.getElementById('notification-popover');
+            if (!bell || !popover) return;
+
+            let isOpen = false;
+
+            function closePopover() {
+                if (!isOpen) return;
+                popover.classList.add('hidden');
+                isOpen = false;
+                document.removeEventListener('click', handleOutsideClick);
+            }
+
+            function handleOutsideClick(event) {
+                if (!popover.contains(event.target) && !bell.contains(event.target)) {
+                    closePopover();
+                }
+            }
+
+            bell.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (isOpen) {
+                    closePopover();
+                    return;
+                }
+                popover.classList.remove('hidden');
+                isOpen = true;
+                document.addEventListener('click', handleOutsideClick);
+                // Auto-close after a short delay so it doesn't linger
+                setTimeout(() => {
+                    closePopover();
+                }, 4000);
+            });
+        }
+
+        // --- 6. Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchRefundData(); // Real
+            fetchExchangeData(); // Placeholder
+            fetchShippingData(); // Placeholder
+            fetchWarehouseData(); // Placeholder
+            fetchRecentOrders(); // Placeholder
+            initChart('week');
+            initOrderFilters();
+            initNotifications();
+        });
+
+    </script>
+</body>
+</html>

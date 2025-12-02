@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2 DETROITAXLE | CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Titillium+Web:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dashboard: {
+                            dark: '#1c1917', card: '#292524', hover: '#44403c', text: '#e7e5e4',
+                            muted: '#a8a29e', accent: '#d97706', accentHover: '#b45309', border: '#57534e'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Titillium Web', 'sans-serif'], serif: ['Cinzel', 'serif'] },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1c1917; }
+        ::-webkit-scrollbar-thumb { background: #57534e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+        .glass-panel { background: rgba(41, 37, 36, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(217, 119, 6, 0.15) 0%, rgba(0,0,0,0) 100%); border-left: 3px solid #d97706; color: #d97706; }
+    </style>
+</head>
+<body class="bg-dashboard-dark text-dashboard-text font-sans antialiased overflow-hidden h-screen flex">
+
+    <aside class="w-64 h-full bg-[#151210] border-r border-dashboard-border flex flex-col z-20 shadow-2xl">
+        <div class="h-20 flex items-center px-6 border-b border-dashboard-border bg-[#0f0d0c]">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-dashboard-accent to-orange-800 flex items-center justify-center text-white font-bold mr-3 shadow-lg shadow-orange-900/50">X2</div>
+            <div><h1 class="font-serif text-xl tracking-wider text-white">DETROITAXLE</h1><p class="text-xs text-dashboard-muted uppercase tracking-widest">Follow-up Team</p></div>
+        </div>
+        <nav class="flex-1 py-6 overflow-y-auto">
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4">Main Menu</p>
+            <ul class="space-y-1">
+                <li><a href="index.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-gauge-high w-6 text-center mr-2"></i>Dashboard</a></li>
+                <li><a href="Tasks &amp; Tools.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-box-open w-6 text-center mr-2"></i>Tasks &amp; Tools</a></li>
+                <li><a href="Shipping &amp; Returns.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-truck-fast w-6 text-center mr-2"></i>Shipping &amp; Returns</a></li>
+                <li><a href="Customer Relations.html" class="nav-item active flex items-center px-6 py-3 text-sm font-medium transition-colors"><i class="fa-solid fa-users-gear w-6 text-center mr-2"></i>CRM &amp; Follow-up</a></li>
+            </ul>
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4 mt-8">System</p>
+            <ul class="space-y-1">
+                <li><a href="System Logs.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-database w-6 text-center mr-2"></i>Supabase Logs</a></li>
+                <li><a href="Settings.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors"><i class="fa-solid fa-gear w-6 text-center mr-2"></i>Settings</a></li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-dashboard-border"><div class="flex items-center gap-3 p-2 rounded-lg bg-dashboard-card hover:bg-dashboard-hover cursor-pointer transition-colors"><img src="https://ui-avatars.com/api/?name=Admin+User&background=d97706&color=fff" class="w-10 h-10 rounded-full border border-dashboard-accent"><div class="flex-1 min-w-0"><p class="text-sm font-medium text-white truncate">Warehouse Mgr.</p><p class="text-xs text-dashboard-muted truncate">admin@x2parts.com</p></div><i class="fa-solid fa-right-from-bracket text-dashboard-muted hover:text-white"></i></div></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#29221f] to-transparent pointer-events-none -z-10"></div>
+        
+        <header class="h-20 flex items-center justify-between px-8 z-10 shrink-0">
+            <div>
+                <h2 class="text-2xl font-serif text-white tracking-wide">Customer Relations</h2>
+                <div class="flex items-center text-xs text-dashboard-muted mt-1 space-x-2"><span>Clients</span><i class="fa-solid fa-chevron-right text-[10px]"></i><span class="text-dashboard-accent">Directory</span></div>
+            </div>
+            <div class="relative"><input type="text" placeholder="Search Client or Company..." class="bg-dashboard-card border border-dashboard-border rounded-full py-2 px-4 pl-10 text-sm focus:outline-none focus:border-dashboard-accent w-64 text-white"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-dashboard-muted"></i></div>
+        </header>
+
+        <div class="flex-1 overflow-hidden p-8 pt-2 flex gap-6">
+            <!-- Client List -->
+            <div class="w-1/3 glass-panel rounded-xl flex flex-col overflow-hidden animate-fade-in">
+                <div class="p-4 border-b border-dashboard-border bg-[#151210] flex justify-between items-center">
+                    <h3 class="font-display font-semibold text-white">Clients</h3>
+                    <button class="text-dashboard-accent text-xs hover:text-white transition-colors"><i class="fa-solid fa-filter mr-1"></i>Filter</button>
+                </div>
+                <div class="flex-1 overflow-y-auto">
+                    <div class="flex flex-col items-center justify-center h-full text-center text-dashboard-muted px-4">
+                        <i class="fa-regular fa-address-book text-3xl mb-3 opacity-50"></i>
+                        <p class="text-sm">No clients loaded yet.</p>
+                        <p class="text-xs mt-1 opacity-70">Once CRM is connected to your data source, your customer list will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Detail -->
+            <div class="w-2/3 glass-panel rounded-xl flex flex-col overflow-hidden animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="p-6 border-b border-dashboard-border bg-[#151210] flex items-start gap-4">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-dashboard-card to-stone-900 border border-dashboard-border flex items-center justify-center text-2xl text-stone-500"><i class="fa-solid fa-user"></i></div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h2 class="text-2xl font-bold text-white">No client selected</h2>
+                        </div>
+                        <div class="flex gap-4 mt-2 text-sm text-dashboard-muted">
+                            <span class="text-dashboard-muted text-sm">Select a client from the list to view full details and interaction history.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6 flex-1 overflow-y-auto">
+                    <h3 class="text-sm uppercase tracking-widest font-bold text-dashboard-muted mb-4 border-b border-dashboard-border pb-2">Interaction History</h3>
+                    
+                    <div class="flex flex-col items-center justify-center text-center text-dashboard-muted py-10">
+                        <i class="fa-regular fa-clipboard text-2xl mb-3 opacity-50"></i>
+                        <p class="text-sm">No interaction history to display.</p>
+                        <p class="text-xs mt-1 opacity-70">Connect CRM events to automatically log calls, emails, and orders here.</p>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-sm uppercase tracking-widest font-bold text-dashboard-muted mb-4 border-b border-dashboard-border pb-2">Add Note</h3>
+                        <textarea class="w-full bg-[#1c1917] border border-dashboard-border rounded-lg p-3 text-white focus:outline-none focus:border-dashboard-accent resize-none h-24" placeholder="Type internal note here..."></textarea>
+                        <div class="flex justify-end mt-2">
+                            <button class="bg-dashboard-card hover:bg-dashboard-hover border border-dashboard-border text-white px-4 py-2 rounded text-sm font-bold transition-all">Save Note</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

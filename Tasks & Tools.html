@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2 DETROITAXLE | Tasks & Tools</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Titillium+Web:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Theme Config (Same as Index) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dashboard: {
+                            dark: '#1c1917',   /* Stone 900 */
+                            card: '#292524',   /* Stone 800 */
+                            hover: '#44403c',  /* Stone 700 */
+                            text: '#e7e5e4',   /* Stone 200 */
+                            muted: '#a8a29e',  /* Stone 400 */
+                            accent: '#d97706', /* Amber 600 - The "Leather" look */
+                            accentHover: '#b45309',
+                            border: '#57534e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Titillium Web', 'sans-serif'],
+                        serif: ['Cinzel', 'serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1c1917; }
+        ::-webkit-scrollbar-thumb { background: #57534e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(41, 37, 36, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.15) 0%, rgba(0,0,0,0) 100%);
+            border-left: 3px solid #d97706;
+            color: #d97706;
+        }
+
+        /* Tool Specific Styles */
+        .tool-input {
+            background-color: #151210;
+            border: 1px solid #44403c;
+            color: #e7e5e4;
+            transition: all 0.2s;
+        }
+        .tool-input:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-dashboard-dark text-dashboard-text font-sans antialiased overflow-hidden h-screen flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 h-full bg-[#151210] border-r border-dashboard-border flex flex-col z-20 shadow-2xl">
+        <!-- Brand -->
+        <div class="h-20 flex items-center px-6 border-b border-dashboard-border bg-[#0f0d0c]">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-dashboard-accent to-orange-800 flex items-center justify-center text-white font-bold mr-3 shadow-lg shadow-orange-900/50">
+                X2
+            </div>
+            <div>
+                <h1 class="font-serif text-xl tracking-wider text-white">DETROITAXLE</h1>
+                <p class="text-xs text-dashboard-muted uppercase tracking-widest">Follow-up Team</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 py-6 overflow-y-auto">
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4">Main Menu</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="index.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-gauge-high w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="Tasks &amp; Tools.html" class="nav-item active flex items-center px-6 py-3 text-sm font-medium hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-box-open w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Tasks & Tools
+                    </a>
+                </li>
+                <li>
+                    <a href="Shipping &amp; Returns.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-truck-fast w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Shipping & Returns
+                    </a>
+                </li>
+                <li>
+                    <a href="Customer Relations.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-users-gear w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        CRM & Follow-up
+                    </a>
+                </li>
+            </ul>
+            <p class="px-6 text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-4 mt-8">System</p>
+            <ul class="space-y-1">
+                <li>
+                    <a href="System Logs.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-database w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Supabase Logs
+                    </a>
+                </li>
+                <li>
+                    <a href="Settings.html" class="nav-item flex items-center px-6 py-3 text-dashboard-muted hover:bg-dashboard-hover/30 hover:text-white transition-colors group">
+                        <i class="fa-solid fa-gear w-6 text-center mr-2 group-hover:scale-110 transition-transform"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- User Profile -->
+        <div class="p-4 border-t border-dashboard-border">
+            <div class="flex items-center gap-3 p-2 rounded-lg bg-dashboard-card hover:bg-dashboard-hover cursor-pointer transition-colors">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=d97706&color=fff" class="w-10 h-10 rounded-full border border-dashboard-accent">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">Warehouse Mgr.</p>
+                    <p class="text-xs text-dashboard-muted truncate">admin@x2parts.com</p>
+                </div>
+                <i class="fa-solid fa-right-from-bracket text-dashboard-muted hover:text-white"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Background Gradient -->
+        <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#29221f] to-transparent pointer-events-none -z-10"></div>
+
+        <!-- Header -->
+        <header class="h-20 flex items-center justify-between px-8 z-10 shrink-0">
+            <div>
+                <h2 class="text-2xl font-serif text-white tracking-wide">Tasks & Tools</h2>
+                <div class="flex items-center text-xs text-dashboard-muted mt-1 space-x-2">
+                    <span>Home</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span class="text-dashboard-accent">Price Match Calculator</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tool Container -->
+        <div class="flex-1 overflow-y-auto p-8 pt-2">
+            
+            <!-- Where the calculator will render -->
+            <div id="priceMatchCalculator" class="max-w-5xl mx-auto animate-fade-in pb-10"></div>
+
+        </div>
+    </main>
+
+    <!-- LOGIC -->
+    <script>
+    (function() {
+      'use strict';
+
+      // ============================================================================
+      // STATE MANAGEMENT (Preserved)
+      // ============================================================================
+      const State = {
+        kitPrice: 0,
+        partPrices: [],
+        setKitPrice(price) { this.kitPrice = parseFloat(price) || 0; },
+        addPart() { this.partPrices.push(0); },
+        removePart() { this.partPrices.pop(); },
+        updatePartPrice(index, price) {
+          if (index >= 0 && index < this.partPrices.length) {
+            this.partPrices[index] = parseFloat(price) || 0;
+          }
+        },
+        clearAll() {
+          this.kitPrice = 0;
+          this.partPrices = [];
+        },
+        getTotalPrice() { return this.partPrices.reduce((sum, price) => sum + price, 0); }
+      };
+
+      // ============================================================================
+      // CALCULATOR LOGIC (Preserved)
+      // ============================================================================
+      const Calculator = {
+        calculateRatio() {
+          const totalPrice = State.getTotalPrice();
+          return totalPrice > 0 && State.kitPrice > 0 ? State.kitPrice / totalPrice : 0;
+        },
+        calculateRefundForPart(partPrice) { return partPrice * this.calculateRatio(); },
+        calculateTotals(selectedIndices) {
+          let refundTotal = 0;
+          selectedIndices.forEach(index => {
+            if (index < State.partPrices.length) {
+              refundTotal += this.calculateRefundForPart(State.partPrices[index]);
+            }
+          });
+          return {
+            refund: refundTotal,
+            deduction: Math.max(0, State.kitPrice - refundTotal)
+          };
+        }
+      };
+
+      // ============================================================================
+      // PART PARSER (Preserved)
+      // ============================================================================
+      const PartParser = {
+        isPadPart(partName) {
+          if (!partName) return false;
+          const lowerName = partName.toLowerCase();
+          const padKeywords = ['brake pad', 'brake pads', 'front pad', 'rear pad', 'ceramic pad', 'metallic pad', 'semi-metallic pad', 'organic pad', 'disc pad', 'drum pad', 'pad set'];
+          return padKeywords.some(keyword => lowerName.includes(keyword));
+        },
+        parseBulkText(text) {
+          if (!text || !text.trim()) return [];
+          const lines = text.trim().split('\n');
+          const parts = [];
+          lines.forEach(line => {
+            line = line.trim();
+            if (!line) return;
+            const qtyMatch = line.match(/^(\d+)\s*(.+)$/);
+            let qty = 1;
+            let rest = line;
+            if (qtyMatch) {
+              qty = parseInt(qtyMatch[1]);
+              rest = qtyMatch[2];
+            }
+            const segments = rest.split(/[\t|]/);
+            let partName = '', partNumber = '';
+            if (segments.length >= 2) {
+              partNumber = segments[segments.length - 1].trim();
+              partName = segments.slice(0, -1).join(' ').trim();
+            } else {
+              const partNumMatch = rest.match(/([A-Z]{2,}\d+[A-Z0-9\-]*)\s*$/i);
+              if (partNumMatch) {
+                partNumber = partNumMatch[1];
+                partName = rest.substring(0, partNumMatch.index).trim();
+              } else {
+                partName = rest;
+              }
+            }
+            if (this.isPadPart(partName)) qty = 1;
+            if (partName || partNumber) parts.push({ qty, name: partName, partNumber });
+          });
+          return parts;
+        }
+      };
+
+      // ============================================================================
+      // UI - REDESIGNED FOR COZY THEME
+      // ============================================================================
+      const UI = {
+        container: null,
+
+        init() {
+          this.container = document.getElementById('priceMatchCalculator');
+          this.render();
+        },
+
+        render() {
+          // New Tailwind-based Template
+          this.container.innerHTML = `
+            <div class="glass-panel p-8 rounded-xl border border-dashboard-border shadow-2xl">
+              
+              <!-- 1. Kit Price Section -->
+              <div class="mb-8">
+                 <label class="block text-dashboard-muted text-xs uppercase tracking-wider font-bold mb-2">Total Kit Price</label>
+                 <div class="relative">
+                    <span class="absolute left-4 top-3 text-stone-500">$</span>
+                    <input type="number" id="kitPriceInput" min="0" step="0.01" placeholder="0.00" 
+                           class="w-full bg-[#151210] border border-stone-700 text-white rounded-lg py-3 pl-8 pr-4 text-lg focus:outline-none focus:border-dashboard-accent focus:ring-1 focus:ring-dashboard-accent transition-all">
+                 </div>
+              </div>
+
+              <!-- 2. Results Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-[#151210] p-6 rounded-lg border border-stone-800 text-center relative overflow-hidden group">
+                   <div class="absolute inset-0 bg-green-900/10 group-hover:bg-green-900/20 transition-colors"></div>
+                   <p class="text-xs text-green-500 uppercase tracking-widest font-bold mb-1 relative z-10">Total Refund</p>
+                   <p class="text-4xl font-bold text-white relative z-10">$<span id="refundTotal">0.00</span></p>
+                </div>
+                <div class="bg-[#151210] p-6 rounded-lg border border-stone-800 text-center relative overflow-hidden group">
+                   <div class="absolute inset-0 bg-orange-900/10 group-hover:bg-orange-900/20 transition-colors"></div>
+                   <p class="text-xs text-orange-500 uppercase tracking-widest font-bold mb-1 relative z-10">Deduction Amount</p>
+                   <p class="text-4xl font-bold text-white relative z-10">$<span id="deductionTotal">0.00</span></p>
+                </div>
+              </div>
+
+              <!-- 3. Bulk Import Section -->
+              <div class="mb-8 p-6 bg-[#151210]/50 rounded-lg border border-stone-800 border-dashed">
+                <label class="block text-dashboard-muted text-xs uppercase tracking-wider font-bold mb-3">
+                    <i class="fa-solid fa-paste mr-2"></i>Bulk Import Parts
+                </label>
+                <textarea id="bulkInput" placeholder="Paste parts here (one per line)...&#10;Example:&#10;1 Rack and Pinion Tie Rod Boots (Pair) BT-201x2&#10;2 Front Outer Tie Rod ES2814" 
+                          class="w-full bg-[#0f0d0c] border border-stone-700 text-stone-300 rounded-lg p-4 font-mono text-sm h-32 focus:outline-none focus:border-dashboard-accent transition-colors resize-y mb-4"></textarea>
+                
+                <div class="flex items-center justify-between">
+                    <div id="bulkStatus" class="text-sm px-3 py-1 rounded hidden"></div>
+                    <button id="bulkAddBtn" class="px-6 py-2 bg-dashboard-card hover:bg-dashboard-hover border border-stone-600 text-white text-sm font-semibold rounded-lg transition-all shadow-lg hover:shadow-xl active:scale-95 flex items-center">
+                        <i class="fa-solid fa-bolt text-dashboard-accent mr-2"></i> Process Bulk
+                    </button>
+                </div>
+              </div>
+
+              <!-- 4. Controls -->
+              <div class="flex flex-wrap gap-3 mb-4">
+                <button id="addPartBtn" class="px-5 py-2 bg-dashboard-accent hover:bg-dashboard-accentHover text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-orange-900/20 active:scale-95">
+                    <i class="fa-solid fa-plus mr-1"></i> Add Part
+                </button>
+                <button id="removePartBtn" class="px-5 py-2 bg-dashboard-card hover:bg-dashboard-hover border border-stone-600 text-stone-300 text-sm font-semibold rounded-lg transition-all active:scale-95">
+                    Remove Last
+                </button>
+                <button id="clearBtn" class="px-5 py-2 bg-red-900/20 hover:bg-red-900/40 border border-red-900/50 text-red-400 text-sm font-semibold rounded-lg transition-all active:scale-95 ml-auto">
+                    <i class="fa-solid fa-trash mr-1"></i> Clear All
+                </button>
+              </div>
+
+              <!-- 5. Parts List -->
+              <div class="bg-[#151210] rounded-lg border border-stone-700 overflow-hidden mb-8">
+                  <!-- Table Header -->
+                  <div class="grid grid-cols-[60px_1fr_120px_100px_100px_40px] gap-4 p-3 bg-stone-900 border-b border-stone-700 text-xs font-bold text-stone-400 uppercase tracking-wider">
+                      <div class="text-center">Qty</div>
+                      <div>Part Name</div>
+                      <div>Part #</div>
+                      <div>List Price</div>
+                      <div>Refund</div>
+                      <div class="text-center"><i class="fa-solid fa-check"></i></div>
+                  </div>
+                  <!-- Scrollable Rows -->
+                  <div id="partsContainer" class="max-h-[500px] overflow-y-auto p-2 space-y-2">
+                      <!-- Rows injected here -->
+                  </div>
+              </div>
+
+              <!-- 6. Email Template Section -->
+              <div id="emailSection" class="hidden animate-fade-in border-t border-stone-700 pt-8 mt-8">
+                <h3 class="text-lg font-display font-semibold text-white mb-4">Email Template</h3>
+                <textarea id="emailTemplate" class="w-full bg-[#0f0d0c] border border-stone-700 text-stone-300 rounded-lg p-4 font-mono text-sm h-48 focus:outline-none focus:border-dashboard-accent transition-colors resize-y mb-4"></textarea>
+                <div class="flex gap-3">
+                    <button id="saveTemplateBtn" class="px-5 py-2 bg-green-700 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-lg">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i>Save Template
+                    </button>
+                    <button id="sendEmailBtn" class="px-5 py-2 bg-blue-700 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-lg">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>Log & Send
+                    </button>
+                </div>
+              </div>
+
+              <!-- 7. Activity Log -->
+              <div id="notesLog" class="mt-8 space-y-2"></div>
+
+            </div>
+          `;
+
+          this.attachEvents();
+          this.addPartRow();
+        },
+
+        attachEvents() {
+          document.getElementById('kitPriceInput').addEventListener('input', (e) => {
+            State.setKitPrice(e.target.value);
+            this.updateTotals();
+          });
+          document.getElementById('addPartBtn').addEventListener('click', () => this.addPartRow());
+          document.getElementById('removePartBtn').addEventListener('click', () => this.removePartRow());
+          document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
+          document.getElementById('bulkAddBtn').addEventListener('click', () => this.processBulkParts());
+
+          document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+            const templateText = document.getElementById('emailTemplate').value;
+            localStorage.setItem('savedPriceMatchTemplate', templateText);
+            alert('Template saved to localStorage!');
+          });
+          document.getElementById('sendEmailBtn').addEventListener('click', () => {
+            this.simulateSend();
+          });
+        },
+
+        processBulkParts() {
+          const bulkInput = document.getElementById('bulkInput');
+          const bulkStatus = document.getElementById('bulkStatus');
+          const text = bulkInput.value;
+
+          if (!text.trim()) {
+            this.showStatus('⚠ Please paste parts first', 'error');
+            return;
+          }
+
+          const parts = PartParser.parseBulkText(text);
+          if (parts.length === 0) {
+            this.showStatus('⚠ No valid parts found', 'error');
+            return;
+          }
+
+          const container = document.getElementById('partsContainer');
+          container.innerHTML = '';
+          State.partPrices = [];
+          parts.forEach(part => this.addPartRow(part.qty, part.name, part.partNumber));
+
+          bulkInput.value = '';
+          this.showStatus(`✓ Added ${parts.length} parts`, 'success');
+        },
+
+        showStatus(msg, type) {
+            const el = document.getElementById('bulkStatus');
+            el.classList.remove('hidden', 'bg-red-900/30', 'text-red-400', 'bg-green-900/30', 'text-green-400');
+            el.classList.add('block');
+            if(type === 'error') {
+                el.classList.add('bg-red-900/30', 'text-red-400');
+            } else {
+                el.classList.add('bg-green-900/30', 'text-green-400');
+            }
+            el.innerHTML = msg;
+            setTimeout(() => el.classList.add('hidden'), 3000);
+        },
+
+        addPartRow(qty = 1, partName = '', partNumber = '') {
+          State.addPart();
+          const index = State.partPrices.length - 1;
+          const container = document.getElementById('partsContainer');
+          
+          const isPad = PartParser.isPadPart(partName);
+          if (isPad) qty = 1;
+          
+          const row = document.createElement('div');
+          // Grid layout matching header
+          row.className = 'grid grid-cols-[60px_1fr_120px_100px_100px_40px] gap-4 items-center bg-[#1c1917] p-2 rounded border border-stone-800 hover:border-dashboard-accent/30 transition-colors animate-fade-in';
+          row.dataset.index = index;
+          
+          const qtyClass = isPad 
+            ? 'bg-amber-900/20 border-amber-700/50 text-amber-500 cursor-not-allowed text-center rounded py-1 px-2 text-sm focus:outline-none'
+            : 'bg-stone-800 border-stone-700 text-white text-center rounded py-1 px-2 text-sm focus:outline-none focus:border-dashboard-accent';
+
+          row.innerHTML = `
+            <input type="number" min="1" value="${qty}" placeholder="Qty" class="qtyInput ${qtyClass}" ${isPad ? 'readonly title="Pad detected - locked"' : ''}>
+            <input type="text" placeholder="Part Name" value="${partName}" class="partNameInput bg-stone-800 border border-stone-700 text-stone-300 rounded py-1 px-3 text-sm focus:outline-none focus:border-dashboard-accent w-full">
+            <input type="text" placeholder="Part #" value="${partNumber}" class="partNumberInput bg-stone-800 border border-stone-700 text-stone-400 rounded py-1 px-2 text-sm focus:outline-none focus:border-dashboard-accent w-full text-center">
+            <input type="number" min="0" step="0.01" placeholder="0.00" class="priceInput bg-stone-800 border border-stone-700 text-white rounded py-1 px-2 text-sm focus:outline-none focus:border-dashboard-accent w-full text-center">
+            <input type="text" readonly class="refundDisplay bg-stone-900 border border-stone-800 text-green-500 font-bold rounded py-1 px-2 text-sm w-full text-center" value="0.00">
+            <div class="flex justify-center">
+                <input type="checkbox" class="checkbox w-5 h-5 rounded border-stone-600 text-dashboard-accent focus:ring-0 bg-stone-800 cursor-pointer accent-[#d97706]">
+            </div>
+          `;
+
+          container.appendChild(row);
+
+          // Event Listeners for the new row
+          row.querySelector('.qtyInput').addEventListener('input', () => this.updateTotals());
+          row.querySelector('.priceInput').addEventListener('input', () => this.updateTotals());
+          row.querySelector('.checkbox').addEventListener('change', () => this.updateTotals());
+          
+          // Monitor part name for pads
+          row.querySelector('.partNameInput').addEventListener('input', (e) => {
+            const qtyInput = row.querySelector('.qtyInput');
+            if (PartParser.isPadPart(e.target.value)) {
+              qtyInput.value = 1;
+              qtyInput.readOnly = true;
+              qtyInput.className = 'qtyInput bg-amber-900/20 border-amber-700/50 text-amber-500 cursor-not-allowed text-center rounded py-1 px-2 text-sm focus:outline-none';
+              qtyInput.title = 'Pad detected - Quantity locked to 1';
+            } else {
+              qtyInput.readOnly = false;
+              qtyInput.className = 'qtyInput bg-stone-800 border-stone-700 text-white text-center rounded py-1 px-2 text-sm focus:outline-none focus:border-dashboard-accent';
+              qtyInput.title = '';
+            }
+            this.updateTotals();
+          });
+        },
+
+        removePartRow() {
+          const container = document.getElementById('partsContainer');
+          if (State.partPrices.length > 0) {
+            State.removePart();
+            container.removeChild(container.lastChild);
+            this.updateTotals();
+          }
+        },
+
+        clearAll() {
+          State.clearAll();
+          document.getElementById('kitPriceInput').value = '';
+          document.getElementById('bulkInput').value = '';
+          document.getElementById('partsContainer').innerHTML = '';
+          document.getElementById('emailSection').classList.add('hidden');
+          document.getElementById('notesLog').innerHTML = '';
+          this.updateTotals();
+        },
+
+        generateEmailTemplate(totals, selectedIndices) {
+          const rows = document.querySelectorAll('#partsContainer [data-index]');
+          let partsList = '';
+          selectedIndices.forEach(idx => {
+            const row = rows[idx];
+            const qty = parseFloat(row.querySelector('.qtyInput').value) || 1;
+            const name = row.querySelector('.partNameInput').value || 'Unnamed Part';
+            const partNumber = row.querySelector('.partNumberInput').value || '';
+            partsList += `• ${qty} x ${name}`;
+            if (partNumber) partsList += ` (SKU: ${partNumber})`;
+            partsList += '\n';
+          });
+          if (!partsList.trim()) partsList = 'No parts selected.';
+          
+      const template = `Subject: Confirmation of Price Match Refund
+
+Dear Valued Customer,
+
+We hope this email finds you well.
+
+We are happy to confirm that your price match request has been processed successfully.
+
+**Refund Amount:** $${totals.refund.toFixed(2)}
+
+**Deduction Amount:** $${totals.deduction.toFixed(2)}
+
+The refund applies to the following parts in your kit:
+
+${partsList}
+
+Please allow 3-5 business days for the refund to process to your original payment method.
+
+If you have any questions or need further assistance, feel free to reply to this email.
+
+Thank you for choosing X2 DETROITAXLE!
+
+Best regards,  
+Johnson  
+Customer Service Agent`;
+          document.getElementById('emailTemplate').value = template;
+        },
+
+        simulateSend() {
+          const rows = document.querySelectorAll('#partsContainer [data-index]');
+          let refundTotal = 0;
+          let skus = [];
+          rows.forEach((row) => {
+            const checkbox = row.querySelector('.checkbox');
+            if (checkbox.checked) {
+              const partNumber = row.querySelector('.partNumberInput').value.trim();
+              if (partNumber) skus.push(partNumber);
+              const qty = parseFloat(row.querySelector('.qtyInput').value) || 1;
+              const price = parseFloat(row.querySelector('.priceInput').value) || 0;
+              refundTotal += Calculator.calculateRefundForPart(qty * price);
+            }
+          });
+          const refundAmt = refundTotal.toFixed(2);
+          const skusStr = skus.length > 0 ? skus.join(', ') : 'N/A';
+          const now = new Date();
+          const dateStr = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getDate().toString().padStart(2, '0')}`;
+          const note = `${dateStr} Follow Up - parts are in a good condition (${skusStr}), refund form submitted ($${refundAmt}), Email sent, Johnson`;
+          
+          const notesLog = document.getElementById('notesLog');
+          const entry = document.createElement('div');
+          entry.className = 'bg-green-900/20 border-l-4 border-green-500 text-green-300 p-3 rounded text-sm animate-fade-in flex items-center';
+          entry.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i> ${note}`;
+          notesLog.prepend(entry);
+        },
+
+        updateTotals() {
+          const rows = document.getElementById('partsContainer').querySelectorAll('[data-index]');
+          const selectedIndices = [];
+
+          rows.forEach((row, index) => {
+            const qty = parseFloat(row.querySelector('.qtyInput').value) || 1;
+            const price = parseFloat(row.querySelector('.priceInput').value) || 0;
+            const lineTotal = qty * price;
+
+            State.updatePartPrice(index, lineTotal);
+
+            const refund = Calculator.calculateRefundForPart(lineTotal);
+            row.querySelector('.refundDisplay').value = refund.toFixed(2);
+
+            if (row.querySelector('.checkbox').checked) {
+              selectedIndices.push(index);
+            }
+          });
+
+          const totals = Calculator.calculateTotals(selectedIndices);
+          document.getElementById('refundTotal').textContent = totals.refund.toFixed(2);
+          document.getElementById('deductionTotal').textContent = totals.deduction.toFixed(2);
+
+          const emailSection = document.getElementById('emailSection');
+          if (totals.refund > 0) {
+            emailSection.classList.remove('hidden');
+            this.generateEmailTemplate(totals, selectedIndices);
+          } else {
+            emailSection.classList.add('hidden');
+          }
+        }
+      };
+
+      // ============================================================================
+      // INITIALIZE
+      // ============================================================================
+      UI.init();
+    })();
+    </script>
+</body>
+</html>
